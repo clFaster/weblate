@@ -40,7 +40,22 @@ class JSONCustomizeAddon(StoreBaseAddon):
             store.store.dump_args["indent"] = indent
         else:
             store.store.dump_args["indent"] = "\t" * indent
-        store.store.dump_args["sort_keys"] = bool(int(config.get("sort_keys", 0)))
+        
+        # Handle new sort_keys options
+        sort_option = config.get("sort_keys", "deactive")
+        if sort_option == "deactive":
+            store.store.dump_args["sort_keys"] = False
+        elif sort_option == "case_sensitive":
+            store.store.dump_args["sort_keys"] = True
+        elif sort_option == "case_insensitive":
+            store.store.dump_args["sort_keys"] = lambda x: x.lower()
+        else:
+            # Fallback for backward compatibility with old boolean values
+            try:
+                store.store.dump_args["sort_keys"] = bool(int(sort_option))
+            except (ValueError, TypeError):
+                store.store.dump_args["sort_keys"] = False
+        
         use_compact_separators = bool(int(config.get("use_compact_separators", 0)))
         store.store.dump_args["separators"] = (
             ",",

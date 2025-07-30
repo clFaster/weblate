@@ -210,7 +210,16 @@ class GitSquashForm(BaseAddonForm):
 
 
 class JSONCustomizeForm(BaseAddonForm):
-    sort_keys = forms.BooleanField(label=gettext_lazy("Sort JSON keys"), required=False)
+    sort_keys = forms.ChoiceField(
+        label=gettext_lazy("Sort JSON keys"),
+        choices=[
+            ("deactive", gettext_lazy("Deactive")),
+            ("case_sensitive", gettext_lazy("Case Sensitive")),
+            ("case_insensitive", gettext_lazy("Case Insensitive")),
+        ],
+        initial="deactive",
+        required=True,
+    )
     use_compact_separators = forms.BooleanField(
         label=gettext_lazy("Avoid spaces after separators"),
         required=False,
